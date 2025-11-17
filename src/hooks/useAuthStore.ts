@@ -1,20 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../store/store';
-import {
-  onChecking,
-  onClearAuthMessages,
-  onLogin,
-  onLogout,
-  onLogoutBarbers,
-  onLogoutCart,
-  onLogoutReviews,
-  onLogoutSettings,
-  onLogoutUserBookings,
-  onSetAuthErrors,
-  onSetLoadingProfileImage,
-  onUpdateProfileImage,
-  onUpdateUser,
-} from '../store';
+import { auth, reviews, bookings, setting, barbers, cart } from '../store';
 import { fileUpload, renewToken, signUp, singIn, updateUser } from '../api';
 
 interface LoginCredentials {
@@ -33,11 +19,13 @@ interface UpdateProfileData {
   email: string;
 }
 
+import type { ValidationError } from '../types/store';
+
 interface UseAuthStoreReturn {
   user: any;
   currentStatus: any;
   message: string | undefined;
-  errors: string[];
+  errors: ValidationError[];
   isLoadingPicture: boolean;
   startCheckingToken: () => Promise<void>;
   startLogin: (credentials: LoginCredentials) => Promise<void>;
@@ -56,25 +44,25 @@ export const useAuthStore = (): UseAuthStoreReturn => {
   // Logout
   const startLogout = () => {
     const token = localStorage.getItem('token');
-    if (!token) return dispatch(onLogout());
+    if (!token) return dispatch(auth.onLogout());
 
     // If token exists...
     localStorage.removeItem('token');
 
     // Clean States...
     // Reviews
-    dispatch(onLogoutReviews());
+    dispatch(reviews.onLogoutReviews());
     // Bookings
-    dispatch(onLogoutUserBookings());
+    dispatch(bookings.onLogoutUserBookings());
     // Settings
-    dispatch(onLogoutSettings());
+    dispatch(setting.onLogoutSettings());
     // Barbers
-    dispatch(onLogoutBarbers());
+    dispatch(barbers.onLogoutBarbers());
     // Cart
-    dispatch(onLogoutCart());
+    dispatch(cart.onLogoutCart());
 
     // Logout the App
-    dispatch(onLogout());
+    dispatch(auth.onLogout());
   };
 
   // Login User
@@ -83,16 +71,16 @@ export const useAuthStore = (): UseAuthStoreReturn => {
       const { user, message } = await singIn(email, password);
       const { token, ...profile } = user;
       localStorage.setItem('token', token);
-      dispatch(onLogin({ profile, message }));
+      dispatch(auth.onLogin({ profile, message }));
     } catch (error: any) {
       const {
         response: {
           data: { message, errors },
         },
       } = error;
-      dispatch(onSetAuthErrors({ message, errors }));
+      dispatch(auth.onSetAuthErrors({ message, errors }));
       setTimeout(() => {
-        dispatch(onClearAuthMessages());
+        dispatch(auth.onClearAuthMessages());
       }, 1000);
       throw new Error(error);
     }
@@ -104,16 +92,16 @@ export const useAuthStore = (): UseAuthStoreReturn => {
       const { user, message } = await signUp(fullName, email, password);
       const { token, ...profile } = user;
       localStorage.setItem('token', token);
-      dispatch(onLogin({ profile, message }));
+      dispatch(auth.onLogin({ profile, message }));
     } catch (error: any) {
       const {
         response: {
           data: { message, errors },
         },
       } = error;
-      dispatch(onSetAuthErrors({ message, errors }));
+      dispatch(auth.onSetAuthErrors({ message, errors }));
       setTimeout(() => {
-        dispatch(onClearAuthMessages());
+        dispatch(auth.onClearAuthMessages());
       }, 1000);
       throw new Error(error);
     }
@@ -121,10 +109,10 @@ export const useAuthStore = (): UseAuthStoreReturn => {
 
   // Check Token and Refresing Session
   const startCheckingToken = async () => {
-    dispatch(onChecking());
+    dispatch(auth.onChecking());
     const token = localStorage.getItem('token');
     if (!token) {
-      dispatch(onLogout());
+      dispatch(auth.onLogout());
       return;
     }
     try {
@@ -133,29 +121,29 @@ export const useAuthStore = (): UseAuthStoreReturn => {
 
       localStorage.setItem('token', newToken);
 
-      dispatch(onLogin({ profile, message: '' }));
+      dispatch(auth.onLogin({ profile, message: '' }));
     } catch (error) {
       localStorage.clear();
-      dispatch(onLogout());
+      dispatch(auth.onLogout());
     }
   };
 
   // Update Profile Url User
   const startUploadingProfilePicture = async (file: File) => {
-    dispatch(onSetLoadingProfileImage(true));
+    dispatch(auth.onSetLoadingProfileImage(true));
     try {
       const { profileUrl } = await fileUpload(file);
-      dispatch(onUpdateProfileImage(profileUrl));
+      dispatch(auth.onUpdateProfileImage(profileUrl));
     } catch (error: any) {
-      dispatch(onSetLoadingProfileImage(false));
+      dispatch(auth.onSetLoadingProfileImage(false));
       const {
         response: {
           data: { message, errors },
         },
       } = error;
-      dispatch(onSetAuthErrors({ message, errors }));
+      dispatch(auth.onSetAuthErrors({ message, errors }));
       setTimeout(() => {
-        dispatch(onClearAuthMessages());
+        dispatch(auth.onClearAuthMessages());
       }, 5000);
       throw new Error(error);
     }
@@ -170,16 +158,16 @@ export const useAuthStore = (): UseAuthStoreReturn => {
       // if token, user updated email
       if (token) localStorage.setItem('token', token);
 
-      dispatch(onUpdateUser(profile));
+      dispatch(auth.onUpdateUser(profile));
     } catch (error: any) {
       const {
         response: {
           data: { message, errors },
         },
       } = error;
-      dispatch(onSetAuthErrors({ message, errors }));
+      dispatch(auth.onSetAuthErrors({ message, errors }));
       setTimeout(() => {
-        dispatch(onClearAuthMessages());
+        dispatch(auth.onClearAuthMessages());
       }, 3000);
       throw new Error(error);
     }

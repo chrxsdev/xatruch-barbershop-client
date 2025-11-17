@@ -7,15 +7,7 @@ import {
   getBarbersAvailability,
   getCart,
 } from '../api';
-import {
-  onAddToCart,
-  onDeleteFromCart,
-  onLoadCart,
-  onAddSession,
-  onClearMessage,
-  onLoadAvailableBarbers,
-  onProcessing,
-} from '../store';
+import { cart as cartSlice } from '../store';
 
 interface BookingSession {
   barberId: string;
@@ -33,22 +25,22 @@ export const useCartStore = () => {
 
   // Start Loading Cart
   const startLoadingCart = async () => {
-    const cart = await getCart();
-    dispatch(onLoadCart(cart));
+    const cartData = await getCart();
+    dispatch(cartSlice.onLoadCart(cartData));
   };
 
   // Start Adding to Cart
   const startAddingToCart = async (id: string) => {
     const service = await addToCart(id);
-    dispatch(onAddToCart(service));
+    dispatch(cartSlice.onAddToCart(service));
   };
 
   // Start Deleting From Cart
   const startDeletingFromCart = async (id: string) => {
     const message = await deleteFromCart(id);
-    dispatch(onDeleteFromCart({ id, message }));
+    dispatch(cartSlice.onDeleteFromCart({ id, message }));
     setTimeout(() => {
-      dispatch(onClearMessage());
+      dispatch(cartSlice.onClearMessage());
     }, 3);
   };
 
@@ -60,22 +52,22 @@ export const useCartStore = () => {
   // Start Loading Barbers
   const startLoadingAvailableBarbers = async (barberId: string, date: string) => {
     const barbers = await getBarbersAvailability(barberId, date);
-    dispatch(onLoadAvailableBarbers(barbers as any));
+    dispatch(cartSlice.onLoadAvailableBarbers(barbers as any));
   };
 
   // Start Adding Booking Session
   const startAddingSession = async (session: BookingSession) => {
-    dispatch(onProcessing());
+    dispatch(cartSlice.onProcessing());
     try {
       const { sessionBooking, message } = await createBooking(session as any);
       dispatch(
-        onAddSession({
+        cartSlice.onAddSession({
           sessionBooked: sessionBooking,
           message,
         })
       );
       setTimeout(() => {
-        dispatch(onClearMessage());
+        dispatch(cartSlice.onClearMessage());
       }, 5000);
     } catch (error) {
       console.log(error);

@@ -1,5 +1,10 @@
 // Redux store types will be exported from store.ts file directly
 
+export interface ValidationError {
+  field?: string;
+  message: string;
+}
+
 // Auth state
 export interface AuthState {
   currentStatus: 'checking' | 'authenticated' | 'not-authenticated';
@@ -11,7 +16,7 @@ export interface AuthState {
     role?: 'USER' | 'ADMIN';
   };
   message?: string;
-  errors: string[];
+  errors: ValidationError[];
   isLoadingPicture: boolean;
 }
 
@@ -49,15 +54,11 @@ export interface ServiceState {
   message?: string;
 }
 
+import type { UserBookingDetail, ActiveBookingDisplay, CartItem } from './entities';
+
 // Cart state
 export interface CartState {
-  cart: Array<{
-    serviceId: string;
-    serviceName: string;
-    price: number;
-    duration: number;
-    imageUrl?: string;
-  }>;
+  cart: CartItem[];
   availableBarbers: Array<{
     id: string;
     fullName: string;
@@ -78,32 +79,13 @@ export interface CartState {
   message?: string;
 }
 
+import type { Booking } from './entities';
+
 // Booking state
 export interface BookingState {
-  bookings: Array<{
-    id: string;
-    userId: string;
-    barberId: string;
-    scheduledDate: string;
-    scheduledTime: string;
-    status: string;
-    totalAmount: number;
-  }>;
-  userbookingDetail: Array<{
-    id: string;
-    bookingId: string;
-    serviceId: string;
-    price: number;
-  }>;
-  activeBooking: {
-    id: string;
-    userId: string;
-    barberId: string;
-    scheduledDate: string;
-    scheduledTime: string;
-    status: string;
-    totalAmount: number;
-  } | null;
+  bookings: Booking[];
+  userbookingDetail: UserBookingDetail[];
+  activeBooking: ActiveBookingDisplay | null;
   bookingDetail: Array<{
     id: string;
     bookingId: string;
@@ -188,7 +170,7 @@ export interface SettingState {
     isActive?: boolean;
   } | null;
   isLoadingSetting: boolean;
-  settingErrors: string[];
+  settingErrors: ValidationError[];
   message?: string;
 }
 

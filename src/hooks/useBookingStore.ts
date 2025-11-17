@@ -6,13 +6,7 @@ import {
   getBookingDetailById,
   getUserBookingDetailById,
 } from '../api/fetch/bookings';
-import {
-  onLoadBookings,
-  onSetActiveBooking,
-  onSetLoadingDetail,
-  onSetUserBookingDetail,
-  onSetView,
-} from '../store';
+import { bookings as BookingStore } from '../store';
 
 export const useBookingStore = () => {
   const {
@@ -26,33 +20,33 @@ export const useBookingStore = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const startFindUserBookingDetail = async (id: string, admin: boolean) => {
-    dispatch(onSetLoadingDetail(true));
+    dispatch(BookingStore.onSetLoadingDetail(true));
     if (!admin) {
       const bookingUserDetails = await getUserBookingDetailById(id);
-      dispatch(onSetActiveBooking(id));
-      dispatch(onSetUserBookingDetail(bookingUserDetails));
-      dispatch(onSetLoadingDetail(false));
+      dispatch(BookingStore.onSetActiveBooking(id));
+      dispatch(BookingStore.onSetUserBookingDetail(bookingUserDetails));
+      dispatch(BookingStore.onSetLoadingDetail(false));
       return;
     }
     const bookingDetails = await getBookingDetailById(id);
-    dispatch(onSetActiveBooking(id));
-    dispatch(onSetUserBookingDetail(bookingDetails));
-    dispatch(onSetLoadingDetail(false));
+    dispatch(BookingStore.onSetActiveBooking(id));
+    dispatch(BookingStore.onSetUserBookingDetail(bookingDetails));
+    dispatch(BookingStore.onSetLoadingDetail(false));
   };
 
   const startLoadingBookings = async (adminView: boolean) => {
-    dispatch(onSetLoadingDetail(true));
+    dispatch(BookingStore.onSetLoadingDetail(true));
     if (!adminView) {
       const userBookings = await getAllUserBookings();
-      dispatch(onLoadBookings(userBookings));
-      dispatch(onSetView(false));
-      dispatch(onSetLoadingDetail(false));
+      dispatch(BookingStore.onLoadBookings(userBookings));
+      dispatch(BookingStore.onSetView(false));
+      dispatch(BookingStore.onSetLoadingDetail(false));
       return;
     }
-    const bookings = await getAllBookings();
-    dispatch(onLoadBookings(bookings));
-    dispatch(onSetView(true));
-    dispatch(onSetLoadingDetail(false));
+    const allBookings = await getAllBookings();
+    dispatch(BookingStore.onLoadBookings(allBookings));
+    dispatch(BookingStore.onSetView(true));
+    dispatch(BookingStore.onSetLoadingDetail(false));
   };
 
   return {

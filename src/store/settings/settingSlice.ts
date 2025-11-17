@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { SettingState } from '../../types/store';
+import type { SettingState, ValidationError } from '../../types/store';
 
 type SettingType = SettingState['settings'][number];
 
@@ -54,7 +54,7 @@ export const settingSlice = createSlice({
       });
       state.isLoadingSetting = false;
     },
-    onSetErrors: (state, { payload }: PayloadAction<string[]>) => {
+    onSetErrors: (state, { payload }: PayloadAction<ValidationError[]>) => {
       state.settingErrors = payload;
     },
     onClearMessage: (state) => {

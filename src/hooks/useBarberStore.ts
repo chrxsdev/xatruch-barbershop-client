@@ -7,14 +7,7 @@ import {
   saveBarber,
   updateBarber,
 } from '../api/fetch';
-import {
-  onAddNewBarber,
-  onClearBarberMessage,
-  onDeleteBarber,
-  onLoadBarbers,
-  onSetActiveBarber,
-  onUpdateBarber,
-} from '../store/barbers/barbersSlice';
+import { barbers as BarberStore } from '../store';
 
 interface BarberData {
   id?: string;
@@ -34,19 +27,19 @@ export const useBarberStore = () => {
 
   // Start Setting Active Barber
   const startSetActiveBarber = (barber: any) => {
-    dispatch(onSetActiveBarber(barber));
+    dispatch(BarberStore.onSetActiveBarber(barber));
   };
 
   // Start Finding Barber
   const startFindBarber = async (id: string) => {
     const barber = await getBarberById(id);
-    dispatch(onSetActiveBarber(barber));
+    dispatch(BarberStore.onSetActiveBarber(barber));
   };
 
   // Loading Barbers
   const startLoadingBarbers = async () => {
-    const barbers = await getAllBarbers();
-    dispatch(onLoadBarbers(barbers));
+    const allBarbers = await getAllBarbers();
+    dispatch(BarberStore.onLoadBarbers(allBarbers));
   };
 
   // Start Creating/Update Barber
@@ -56,27 +49,27 @@ export const useBarberStore = () => {
     // Update
     if (id) {
       const { barber: barberUpdated, message } = await updateBarber(id, rest);
-      dispatch(onUpdateBarber({ barberUpdated, message }));
+      dispatch(BarberStore.onUpdateBarber({ barberUpdated, message }));
       setTimeout(() => {
-        dispatch(onClearBarberMessage());
+        dispatch(BarberStore.onClearBarberMessage());
       }, 3);
       return;
     }
 
     // Create
     const { barber: barberSaved, message } = await saveBarber(rest);
-    dispatch(onAddNewBarber({ barberSaved, message }));
+    dispatch(BarberStore.onAddNewBarber({ barberSaved, message }));
     setTimeout(() => {
-      dispatch(onClearBarberMessage());
+      dispatch(BarberStore.onClearBarberMessage());
     }, 3);
   };
 
   // Start Deleting
   const startDeleting = async (id: string) => {
     const message = await deleteBarber(id);
-    dispatch(onDeleteBarber(message));
+    dispatch(BarberStore.onDeleteBarber(message));
     setTimeout(() => {
-      dispatch(onClearBarberMessage());
+      dispatch(BarberStore.onClearBarberMessage());
     }, 3);
   };
 

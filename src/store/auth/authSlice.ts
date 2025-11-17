@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { authStatus } from '../../data/data';
-import type { AuthState } from '../../types/store';
+import type { AuthState, ValidationError } from '../../types/store';
 
 const initialState: AuthState = {
   currentStatus: authStatus[0],
@@ -32,7 +32,7 @@ export const authSlice = createSlice({
       state.message = undefined;
       state.errors = [];
     },
-    onSetAuthErrors: (state, { payload }: PayloadAction<{ errors: string[]; message: string }>) => {
+    onSetAuthErrors: (state, { payload }: PayloadAction<{ errors: ValidationError[]; message: string }>) => {
       state.errors = payload.errors;
       state.message = payload.message;
     },

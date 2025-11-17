@@ -7,18 +7,7 @@ import {
   getAllSettings,
   updateSetting,
 } from '../api/fetch';
-import {
-  onAddNewSetting,
-  onFindSetting,
-  onLoadSettings,
-  onSetActiveSetting,
-  onClearErrors,
-  onClearMessage,
-  onDeleteSetting,
-  onSetErrors,
-  onSetSettingStatus,
-  onUpdateSetting,
-} from '../store';
+import { setting } from '../store';
 
 interface SettingData {
   id?: string;
@@ -38,45 +27,45 @@ export const useSettingStore = () => {
 
   // Find Setting
   const startFindSetting = (id: string) => {
-    dispatch(onFindSetting({ id }));
+    dispatch(setting.onFindSetting({ id }));
   };
 
   // Set Active Setting
-  const startSetActiveSetting = (setting: any) => {
-    dispatch(onSetActiveSetting(setting));
+  const startSetActiveSetting = (settingData: any) => {
+    dispatch(setting.onSetActiveSetting(settingData));
   };
 
   // Load All Settings
   const startLoadingSettings = async () => {
-    const settings = await getAllSettings();
-    dispatch(onLoadSettings(settings));
+    const allSettings = await getAllSettings();
+    dispatch(setting.onLoadSettings(allSettings));
   };
 
   // Set Setting Status
   const startSetSettingStatus = async (id: string) => {
-    const { setting, message } = await activateSetting(id);
-    dispatch(onSetSettingStatus({ setting, message }));
+    const { setting: settingData, message } = await activateSetting(id);
+    dispatch(setting.onSetSettingStatus({ setting: settingData, message }));
     setTimeout(() => {
-      dispatch(onClearMessage());
+      dispatch(setting.onClearMessage());
     }, 1000);
   };
 
   // Saving Setting
-  const startSavingSetting = async (setting: SettingData) => {
-    if (setting.id) {
+  const startSavingSetting = async (settingData: SettingData) => {
+    if (settingData.id) {
       // update
-      const { setting: schedule, message } = await updateSetting(setting as any);
-      dispatch(onUpdateSetting({ schedule, message }));
+      const { setting: schedule, message } = await updateSetting(settingData as any);
+      dispatch(setting.onUpdateSetting({ schedule, message }));
       setTimeout(() => {
-        dispatch(onClearMessage());
+        dispatch(setting.onClearMessage());
       }, 3000);
       return;
     }
     // Save Setting
-    const { setting: schedule, message } = await createSetting(setting as any);
-    dispatch(onAddNewSetting({ schedule, message }));
+    const { setting: schedule, message } = await createSetting(settingData as any);
+    dispatch(setting.onAddNewSetting({ schedule, message }));
     setTimeout(() => {
-      dispatch(onClearMessage());
+      dispatch(setting.onClearMessage());
     }, 3000);
   };
 
@@ -84,9 +73,9 @@ export const useSettingStore = () => {
   const startDeleteSetting = async (id: string) => {
     try {
       const message = await deleteSetting(id);
-      dispatch(onDeleteSetting(message));
+      dispatch(setting.onDeleteSetting(message));
       setTimeout(() => {
-        dispatch(onClearMessage());
+        dispatch(setting.onClearMessage());
       }, 3000);
     } catch (error: any) {
       const {
@@ -94,9 +83,9 @@ export const useSettingStore = () => {
           data: { errors },
         },
       } = error;
-      dispatch(onSetErrors(errors));
+      dispatch(setting.onSetErrors(errors));
       setTimeout(() => {
-        dispatch(onClearErrors());
+        dispatch(setting.onClearErrors());
       }, 4000);
     }
   };

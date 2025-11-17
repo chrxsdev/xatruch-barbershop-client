@@ -1,7 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 import type { Setting } from '../../../types';
-import { Actions, Table } from '..';
 import { formatTime } from '../../../helpers';
+import { Actions } from '../Services';
+import { Table } from '../Table';
 
 const columns: ColumnDef<Setting, any>[] = [
   {

@@ -1,19 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../store/store';
 import {
-  onAddNewReview,
-  onApproveReviews,
-  onClearMessage,
-  onDeleteReview,
-  onFindUserReview,
-  onLoadApprovedReviews,
-  onLoadReviews,
-  onSetMessage,
-  onSetSelectedReview,
-  onUpdateApprovedReviews,
-  onUpdateReview,
-} from '../store/reviews/reviewsSlice';
-import {
   approveReviews,
   deleteReview,
   getReviews,
@@ -21,7 +8,7 @@ import {
   saveReview,
   updateReview,
 } from '../api/fetch/review';
-import { onSetIsLoading } from '../store';
+import { reviews as ReviewStore } from '../store';
 
 interface ReviewData {
   id?: string;
@@ -41,51 +28,51 @@ export const useReviewStore = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const startSetActiveUserReview = (id: string) => {
-    dispatch(onFindUserReview({ id }));
+    dispatch(ReviewStore.onFindUserReview({ id }));
   };
 
   // Loading Reviews
   const startLoadingReviews = async (isAdmin = false) => {
     if (!isAdmin) {
       const userReviews = await getUserReviews();
-      dispatch(onLoadReviews(userReviews));
+      dispatch(ReviewStore.onLoadReviews(userReviews));
       return;
     }
-    const reviews = await getReviews();
-    dispatch(onLoadReviews(reviews));
+    const allReviews = await getReviews();
+    dispatch(ReviewStore.onLoadReviews(allReviews));
   };
 
   // Add/remove to Approve
   const startApprovingReviews = (id: string) => {
-    dispatch(onApproveReviews(id));
+    dispatch(ReviewStore.onApproveReviews(id));
   };
 
   // Start Loading Aproved Reviews
   const startLoadingApprovedReviews = async () => {
     try {
-      const reviews = await getReviews(true);
-      dispatch(onLoadApprovedReviews(reviews));
+      const allReviews = await getReviews(true);
+      dispatch(ReviewStore.onLoadApprovedReviews(allReviews));
     } catch (error) {
-      dispatch(onLoadApprovedReviews([]));
+      dispatch(ReviewStore.onLoadApprovedReviews([]));
     }
   };
 
   // Start Approving Reviews
   const startSavingApprovedReviews = async (ids: string[]) => {
     const { reviews: approvedReviews, message } = await approveReviews(ids);
-    dispatch(onUpdateApprovedReviews(approvedReviews));
-    dispatch(onSetMessage(message));
+    dispatch(ReviewStore.onUpdateApprovedReviews(approvedReviews));
+    dispatch(ReviewStore.onSetMessage(message));
     setTimeout(() => {
-      dispatch(onClearMessage());
+      dispatch(ReviewStore.onClearMessage());
     }, 5);
   };
 
   const startSetIsLoadingUserReviews = () => {
-    dispatch(onSetIsLoading());
+    dispatch(ReviewStore.onSetLoadingReview());
   };
 
   const setActiveReview = (review: any) => {
-    dispatch(onSetSelectedReview(review));
+    dispatch(ReviewStore.onSetSelectedReview(review));
   };
 
   const startSavingReview = async ({ id, title, review }: ReviewData) => {
@@ -95,24 +82,24 @@ export const useReviewStore = () => {
         title,
         review,
       });
-      dispatch(onUpdateReview({ reviewUpdated, message }));
+      dispatch(ReviewStore.onUpdateReview({ reviewUpdated, message }));
       setTimeout(() => {
-        dispatch(onClearMessage());
+        dispatch(ReviewStore.onClearMessage());
       }, 10);
       return;
     }
     const { review: reviewSaved, message } = await saveReview(title, review);
-    dispatch(onAddNewReview({ reviewSaved, message }));
+    dispatch(ReviewStore.onAddNewReview({ reviewSaved, message }));
     setTimeout(() => {
-      dispatch(onClearMessage());
+      dispatch(ReviewStore.onClearMessage());
     }, 10);
   };
 
   const startDeletingUserReview = async (id: string) => {
     const message = await deleteReview(id);
-    dispatch(onDeleteReview({ message }));
+    dispatch(ReviewStore.onDeleteReview({ message }));
     setTimeout(() => {
-      dispatch(onClearMessage());
+      dispatch(ReviewStore.onClearMessage());
     }, 10);
   };
 

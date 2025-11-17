@@ -35,18 +35,19 @@ export interface Barber {
   updatedAt?: string;
 }
 
+
 export interface Booking {
   id: string;
   userId: string;
   barberId: string;
-  serviceIds: string[];
+  bookingDate: string;
+  bookingTime: string;
   scheduledDate: string;
   scheduledTime: string;
-  status: 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED';
+  barber: string;
+  user: string;
+  status: string;
   totalAmount: number;
-  notes?: string;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface BookingDetail {
@@ -56,6 +57,28 @@ export interface BookingDetail {
   service?: Service;
   price: number;
   createdAt?: string;
+}
+
+export interface UserBookingDetail {
+  id: string;
+  bookingId: string;
+  serviceId: string;
+  serviceName: string;
+  price: number;
+  service?: Service;
+  createdAt?: string;
+}
+
+export interface ActiveBookingDisplay {
+  id: string;
+  userId: string;
+  barberId: string;
+  bookingDate: string;
+  bookingTime: string;
+  barber: string;
+  user: string;
+  status: string;
+  totalAmount: number;
 }
 
 export interface CartItem {
@@ -74,6 +97,12 @@ export interface SessionBooked {
   services: Service[];
   totalAmount: number;
   totalDuration: number;
+}
+
+export interface BookingSession {
+  scheduledDate: string;
+  scheduledTime: string;
+  barberId: string;
 }
 
 export interface Review {

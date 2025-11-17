@@ -19,9 +19,9 @@ export const Features = ({ features }: FeaturesProps) => {
         Mas que un corte de cabello, <br /> una experiencia.{' '}
       </h2>
       <div className="container-features">
-        {features.map((info) => (
+        {features.map((info, i) => (
           <CardDescription
-            key={info.icon}
+            key={`${info.icon}-${i}`}
             icon={info.icon}
             title={info.title}
             description={info.description}

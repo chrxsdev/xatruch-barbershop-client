@@ -22,8 +22,8 @@ interface ServiceResponse {
 
 // GET
 export const getAllServices = async (): Promise<Service[]> => {
-  const { data } = await xatruchBarberApi.get<Service[]>('/services');
-  return data;
+  const { data } = await xatruchBarberApi.get<ApiResponse<Service[]>>('/services');
+  return data.data;
 };
 
 // GET BY ID

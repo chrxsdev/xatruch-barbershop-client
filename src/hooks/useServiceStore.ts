@@ -6,17 +6,7 @@ import {
   saveService,
   updateService,
 } from '../api';
-import {
-  onLoadServices,
-  onSetIsLoading,
-  onFilterServices,
-  onResetFilter,
-  onSaveNewService,
-  onClearMessage,
-  onSetActiveService,
-  onSetServiceErrors,
-  onUpdateService,
-} from '../store';
+import { service } from '../store';
 
 interface ServiceData {
   id?: string;
@@ -58,38 +48,38 @@ export const useServiceStore = (): UseServiceStoreReturn => {
 
   // Set it Loading
   const startSetIsLoading = () => {
-    dispatch(onSetIsLoading());
+    dispatch(service.onSetIsLoading());
   };
 
   // Start Setting Active Service
-  const startSetActiveService = (service: any) => {
-    dispatch(onSetActiveService(service));
+  const startSetActiveService = (serviceData: any) => {
+    dispatch(service.onSetActiveService(serviceData));
   };
 
   // Start Find Service
   const startFindService = async (id: string) => {
-    const service = await getServiceById(id);
-    dispatch(onSetActiveService(service));
+    const serviceData = await getServiceById(id);
+    dispatch(service.onSetActiveService(serviceData));
   };
 
   // Start Saving Service
-  const startSavingService = async (service: ServiceData) => {
+  const startSavingService = async (serviceData: ServiceData) => {
     try {
-      if (service.id) {
+      if (serviceData.id) {
         // Updating Service...
-        const { service: serviceUpdated, message } = await updateService(service as any);
-        dispatch(onUpdateService({ serviceUpdated, message }));
+        const { service: serviceUpdated, message } = await updateService(serviceData as any);
+        dispatch(service.onUpdateService({ serviceUpdated, message }));
         setTimeout(() => {
-          dispatch(onClearMessage());
+          dispatch(service.onClearMessage());
         }, 3000);
         return;
       }
 
       // Saving Service
-      const { service: serviceSaved, message } = await saveService(service);
-      dispatch(onSaveNewService({ serviceSaved, message }));
+      const { service: serviceSaved, message } = await saveService(serviceData);
+      dispatch(service.onSaveNewService({ serviceSaved, message }));
       setTimeout(() => {
-        dispatch(onClearMessage());
+        dispatch(service.onClearMessage());
       }, 3000);
     } catch (error: any) {
       const {
@@ -97,31 +87,31 @@ export const useServiceStore = (): UseServiceStoreReturn => {
           data: { errors },
         },
       } = error;
-      dispatch(onSetServiceErrors(errors));
+      dispatch(service.onSetServiceErrors(errors));
       throw new Error(errors);
     }
   };
 
   // Start Loading Services
   const startLoadingServices = async () => {
-    const services = await getAllServices();
-    dispatch(onLoadServices(services));
+    const allServices = await getAllServices();
+    dispatch(service.onLoadServices(allServices));
   };
 
   // Filtering Services
   const startFilteringServices = (serviceName = '') => {
-    dispatch(onFilterServices(serviceName));
+    dispatch(service.onFilterServices(serviceName));
 
     /* Set Loading to False */
-    dispatch(onSetIsLoading());
+    dispatch(service.onSetIsLoading());
   };
 
   // Restore Services
   const startFilteringReset = () => {
-    dispatch(onResetFilter());
+    dispatch(service.onResetFilter());
 
     /* Set Loading to False */
-    dispatch(onSetIsLoading());
+    dispatch(service.onSetIsLoading());
   };
 
   return {

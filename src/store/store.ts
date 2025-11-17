@@ -1,15 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-
-import {
-  authSlice,
-  serviceSlice,
-  uiSlice,
-  reviewsSlice,
-  bookingsSlice,
-  settingSlice,
-  barbersSlice,
-  cartSlice,
-} from './';
+import { authSlice } from './auth/authSlice';
+import { bookingsSlice } from './bookings/bookingsSlice';
+import { barbersSlice } from './barbers/barbersSlice';
+import { cartSlice } from './cart/cartSlice';
+import { serviceSlice } from './service/serviceSlice';
+import { settingSlice } from './settings/settingSlice';
+import { reviewsSlice } from './reviews/reviewsSlice';
+import { uiSlice } from './ui/uiSlice';
 
 export const store = configureStore({
   reducer: {

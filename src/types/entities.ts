@@ -80,6 +80,8 @@ export interface Review {
   id: string;
   userId: string;
   bookingId: string;
+  title: string;
+  review: string;
   rating: number;
   comment: string;
   user?: User;

@@ -36,9 +36,7 @@ interface UseAuthStoreReturn {
 }
 
 export const useAuthStore = (): UseAuthStoreReturn => {
-  const { user, isLoadingPicture, currentStatus, message, errors } = useSelector(
-    (state: any) => state.auth
-  );
+  const { user, isLoadingPicture, currentStatus, message, errors } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
 
   // Logout
@@ -73,11 +71,7 @@ export const useAuthStore = (): UseAuthStoreReturn => {
       localStorage.setItem('token', token);
       dispatch(auth.onLogin({ profile, message }));
     } catch (error: any) {
-      const {
-        response: {
-          data: { message, errors },
-        },
-      } = error;
+      const { message, errors } = error.response.data;
       dispatch(auth.onSetAuthErrors({ message, errors }));
       setTimeout(() => {
         dispatch(auth.onClearAuthMessages());
@@ -94,11 +88,7 @@ export const useAuthStore = (): UseAuthStoreReturn => {
       localStorage.setItem('token', token);
       dispatch(auth.onLogin({ profile, message }));
     } catch (error: any) {
-      const {
-        response: {
-          data: { message, errors },
-        },
-      } = error;
+      const { message, errors } = error.response.data;
       dispatch(auth.onSetAuthErrors({ message, errors }));
       setTimeout(() => {
         dispatch(auth.onClearAuthMessages());
@@ -136,11 +126,7 @@ export const useAuthStore = (): UseAuthStoreReturn => {
       dispatch(auth.onUpdateProfileImage(profileUrl));
     } catch (error: any) {
       dispatch(auth.onSetLoadingProfileImage(false));
-      const {
-        response: {
-          data: { message, errors },
-        },
-      } = error;
+      const { message, errors } = error.response.data;
       dispatch(auth.onSetAuthErrors({ message, errors }));
       setTimeout(() => {
         dispatch(auth.onClearAuthMessages());
@@ -160,11 +146,7 @@ export const useAuthStore = (): UseAuthStoreReturn => {
 
       dispatch(auth.onUpdateUser(profile));
     } catch (error: any) {
-      const {
-        response: {
-          data: { message, errors },
-        },
-      } = error;
+      const { message, errors } = error.response.data;
       dispatch(auth.onSetAuthErrors({ message, errors }));
       setTimeout(() => {
         dispatch(auth.onClearAuthMessages());

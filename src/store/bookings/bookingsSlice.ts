@@ -26,7 +26,7 @@ export const bookingsSlice = createSlice({
     onSetUserBookingDetail: (state, { payload }: PayloadAction<BookingDetail[]>) => {
       state.userbookingDetail = payload.map((detail): UserBookingDetail => ({
         ...detail,
-        serviceName: detail.service?.serviceName || 'Unknown Service',
+        serviceName: detail.serviceName || 'Unknown Service',
       }));
     },
     onSetActiveBooking: (state, { payload }: PayloadAction<string>) => {

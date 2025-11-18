@@ -6,8 +6,6 @@ import { Message, SpinnerLoader } from '../../components'
 export const UserReviewsView = () => {
   const { reviews, isLoadingReviews, startLoadingReviews } = useReviewStore()
 
-  console.log(reviews)
-
   useEffect(() => {
     startLoadingReviews()
   }, [])

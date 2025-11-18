@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
-import { AuthRoutes } from '../auth/routes'
 import { AdminRoutes, CheckoutRoutes, UserRoutes } from '../app/routes'
 
 import { ServicesPage } from '../app/pages/ServicesPage'
@@ -10,6 +9,7 @@ import { useAuthStore, useReviewStore } from '../hooks'
 import { authStatus } from '../data/data'
 import { AuthLoader } from '../ui'
 import { useCartStore } from '../hooks/useCartStore'
+import { AuthRoutes } from '../auth/routes'
 
 export const AppRouter = () => {
   const {

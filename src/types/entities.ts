@@ -54,7 +54,7 @@ export interface BookingDetail {
   id: string;
   bookingId: string;
   serviceId: string;
-  service?: Service;
+  serviceName: string;
   price: number;
   createdAt?: string;
 }
@@ -65,7 +65,6 @@ export interface UserBookingDetail {
   serviceId: string;
   serviceName: string;
   price: number;
-  service?: Service;
   createdAt?: string;
 }
 

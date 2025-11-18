@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../store/store';
+import type { MessageInfo } from '../types/store';
 import {
   getAllServices,
   getServiceById,
@@ -23,7 +24,7 @@ interface UseServiceStoreReturn {
   allServices: any[];
   activeService: any | null;
   isLoadingServices: boolean;
-  message: string | undefined;
+  message: MessageInfo | undefined;
   serviceErrors: string[];
   startLoadingServices: () => Promise<void>;
   startFilteringServices: (serviceName?: string) => void;
@@ -94,8 +95,13 @@ export const useServiceStore = (): UseServiceStoreReturn => {
 
   // Start Loading Services
   const startLoadingServices = async () => {
-    const allServices = await getAllServices();
-    dispatch(service.onLoadServices(allServices));
+    try {
+      const allServices = await getAllServices();
+      dispatch(service.onLoadServices(allServices));
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || 'No se pudieron cargar los servicios. Verifica tu conexión a internet.';
+      dispatch(service.onSetMessage({ text: errorMessage, type: 'danger' }));
+    }
   };
 
   // Filtering Services

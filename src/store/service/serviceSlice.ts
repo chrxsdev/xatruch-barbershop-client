@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { ServiceState } from '../../types/store';
+import type { ServiceState, MessageInfo } from '../../types/store';
 
 type ServiceType = ServiceState['allServices'][number];
 
@@ -18,7 +18,7 @@ export const serviceSlice = createSlice({
   reducers: {
     onSaveNewService: (state, { payload }: PayloadAction<{ serviceSaved: ServiceType; message: string }>) => {
       state.allServices.push(payload.serviceSaved);
-      state.message = payload.message;
+      state.message = { text: payload.message, type: 'success' };
       state.serviceErrors = [];
     },
     onUpdateService: (state, { payload }: PayloadAction<{ serviceUpdated: ServiceType; message: string }>) => {
@@ -26,7 +26,7 @@ export const serviceSlice = createSlice({
         if (serv.id !== payload.serviceUpdated.id) return serv;
         return payload.serviceUpdated;
       });
-      state.message = payload.message;
+      state.message = { text: payload.message, type: 'success' };
       state.serviceErrors = [];
     },
     onLoadServices: (state, { payload }: PayloadAction<ServiceType[]>) => {
@@ -62,6 +62,10 @@ export const serviceSlice = createSlice({
     onSetIsLoading: (state) => {
       state.isLoadingServices = false;
     },
+    onSetMessage: (state, { payload }: PayloadAction<MessageInfo>) => {
+      state.message = payload;
+      state.isLoadingServices = false;
+    },
   },
 });
 
@@ -76,4 +80,5 @@ export const {
   onResetFilter,
   onSaveNewService,
   onSetIsLoading,
+  onSetMessage,
 } = serviceSlice.actions;

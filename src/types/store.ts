@@ -1,5 +1,12 @@
 // Redux store types will be exported from store.ts file directly
 
+export type MessageType = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark';
+
+export interface MessageInfo {
+  text: string;
+  type?: MessageType;
+}
+
 export interface ValidationError {
   field?: string;
   message: string;
@@ -51,7 +58,7 @@ export interface ServiceState {
     isActive: boolean;
   } | null;
   serviceErrors: string[];
-  message?: string;
+  message?: MessageInfo;
 }
 
 import type { UserBookingDetail, ActiveBookingDisplay, CartItem } from './entities';

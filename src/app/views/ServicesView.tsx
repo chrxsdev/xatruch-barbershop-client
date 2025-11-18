@@ -44,10 +44,13 @@ export const ServicesView = () => {
 
   const renderServices = useMemo(() => {
     if (services.length === 0) {
-      return <Message message={message || 'Lo sentimos, no encontramos los servicios 😔'} type='dark' />
+      const messageText = message?.text || 'Lo sentimos, no encontramos los servicios 😔';
+      const messageType = message?.type || 'dark';
+      return <Message message={messageText} type={messageType} />
     }
     return <ServicesGrid services={services} />
   }, [message, services])
+
 
   return (
     <div className='container-fluid'>

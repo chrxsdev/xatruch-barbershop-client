@@ -1,6 +1,8 @@
+import type { MessageType } from '../../types/store';
+
 interface MessageProps {
   message: string;
-  type: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark';
+  type: MessageType;
 }
 
 export const Message = ({ message, type }: MessageProps) => {

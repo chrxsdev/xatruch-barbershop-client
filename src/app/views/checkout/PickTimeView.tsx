@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Swal from 'sweetalert2'
-import { Controller, useForm } from 'react-hook-form'
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { Controller, useForm } from 'react-hook-form';
 import {
   faCalendar,
   faCartShopping,
@@ -10,44 +10,38 @@ import {
   faListCheck,
   faRotateLeft,
   faUser,
-} from '@fortawesome/free-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons';
 
-import DatePicker from 'react-datepicker'
+import DatePicker from 'react-datepicker';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useCartStore } from '../../../hooks/useCartStore'
-import { Message, SpinnerLoader } from '../../components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useCartStore } from '../../../hooks/useCartStore';
+import { Message, SpinnerLoader } from '../../components';
 
-import 'react-datepicker/dist/react-datepicker.min.css'
-import { useBarberStore } from '../../../hooks'
-import { addDays } from 'date-fns'
-import { alertSuccess, formatFullDate, formatTime, formatToValidDate } from '../../../helpers'
-import type { CartItem, Barber } from '../../../types/entities'
+import 'react-datepicker/dist/react-datepicker.min.css';
+import { useBarberStore } from '../../../hooks';
+import { addDays } from 'date-fns';
+import { alertSuccess, formatFullDate, formatTime, formatToValidDate } from '../../../helpers';
+import type { CartItem, Barber } from '../../../types/entities';
 
 interface PickTimeFormData {
-  bookingDate: Date
-  bookingTime: string
-  barberId: string
+  bookingDate: Date;
+  bookingTime: string;
+  barberId: string;
 }
 
 const init: PickTimeFormData = {
   bookingDate: addDays(new Date(), 1),
   bookingTime: '',
   barberId: '',
-}
+};
 
 export const PickTimeView = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const {
-    cart,
-    availableBarbers,
-    startAddingSession,
-    startLoadingAvailableBarbers,
-    isProcessing,
-    message,
-  } = useCartStore()
-  const { barbers, startLoadingBarbers } = useBarberStore()
+  const { cart, availableBarbers, startAddingSession, startLoadingAvailableBarbers, isProcessing, message } =
+    useCartStore();
+  const { barbers, startLoadingBarbers } = useBarberStore();
 
   const {
     register,
@@ -55,52 +49,53 @@ export const PickTimeView = () => {
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm<PickTimeFormData>({ defaultValues: init })
+  } = useForm<PickTimeFormData>({ defaultValues: init });
 
   useEffect(() => {
     if (message !== undefined) {
-      const successInfo = alertSuccess(message, 'success', 5000)
-      Swal.fire(successInfo)
+      const successInfo = alertSuccess(message, 'success', 5000);
+      Swal.fire(successInfo);
     }
-  }, [message])
+  }, [message]);
 
   useEffect(() => {
-    startLoadingBarbers()
-  }, [])
+    startLoadingBarbers();
+  }, []);
 
   const onSelectBarber = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const barberId = event.target.value
-    if (!barberId) return
-    const date = formatToValidDate(getValues('bookingDate'))
-    startLoadingAvailableBarbers(barberId, date)
-  }
+    const barberId = event.target.value;
+    if (!barberId) return;
+    const date = formatToValidDate(getValues('bookingDate'));
+    startLoadingAvailableBarbers(barberId, date);
+  };
 
   const onSelectBookingDate = (date: Date | null) => {
-    if (!date) return
-    const barberId = getValues('barberId')
-    if (!barberId) return
-    const formattedDate = formatToValidDate(date)
-    startLoadingAvailableBarbers(barberId, formattedDate)
-  }
+    if (!date) return;
+    const barberId = getValues('barberId');
+    if (!barberId) return;
+    const formattedDate = formatToValidDate(date);
+    startLoadingAvailableBarbers(barberId, formattedDate);
+  };
 
   const onBookSession = (data: PickTimeFormData) => {
-    const { bookingDate, bookingTime, barberId } = data
+    const { bookingDate, bookingTime, barberId } = data;
     const booking = {
-      scheduledDate: formatFullDate(bookingDate),
-      scheduledTime: bookingTime,
+      bookingDate: formatFullDate(bookingDate),
+      bookingTime: bookingTime,
       barberId,
-    }
+    };
+
     startAddingSession(booking).then(() => {
       navigate('/account/bookings')
-    })
-  }
+    });
+  };
 
   if (isProcessing)
     return (
       <div className='container text-center' style={{ marginTop: '20%' }}>
         <SpinnerLoader />
       </div>
-    )
+    );
 
   return (
     <div className='container-fluid' style={{ marginTop: '120px' }}>
@@ -144,8 +139,8 @@ export const PickTimeView = () => {
                         dateFormat='P'
                         minDate={addDays(new Date(), 1)}
                         onChange={(date) => {
-                          field.onChange(date)
-                          onSelectBookingDate(date)
+                          field.onChange(date);
+                          onSelectBookingDate(date);
                         }}
                         selected={field.value}
                         placeholderText='Fecha de Sesión'
@@ -249,5 +244,5 @@ export const PickTimeView = () => {
         </>
       )}
     </div>
-  )
-}
+  );
+};

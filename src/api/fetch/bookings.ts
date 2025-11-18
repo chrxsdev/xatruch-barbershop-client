@@ -2,10 +2,10 @@ import xatruchBarberApi from '../clientApi';
 import type { ApiResponse } from '../../types/api';
 import type { Booking, BookingDetail } from '../../types/entities';
 
-interface CreateBookingParams {
+export interface CreateBookingParams {
   barberId: string;
-  scheduledDate: string;
-  scheduledTime: string;
+  bookingDate: string;
+  bookingTime: string;
   serviceIds: string[];
   notes?: string;
 }
@@ -57,9 +57,9 @@ export const getBarbersAvailability = async (barberId: string, date: string): Pr
 
 // POST - Create Order
 export const createBooking = async (booking: CreateBookingParams): Promise<CreateBookingResponse> => {
-  const {
-    data: { data, message },
-  } = await xatruchBarberApi.post<ApiResponse<Booking>>('/bookings/orders', booking);
+  const response = await xatruchBarberApi.post<ApiResponse<Booking>>('/bookings/orders', booking);
+  const { data, message } = response.data;
+
   return {
     sessionBooking: data,
     message: message ?? '',

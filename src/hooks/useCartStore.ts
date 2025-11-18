@@ -3,6 +3,7 @@ import type { AppDispatch } from '../store/store';
 import {
   addToCart,
   createBooking,
+  CreateBookingParams,
   deleteFromCart,
   getBarbersAvailability,
   getCart,
@@ -11,8 +12,8 @@ import { cart as cartSlice } from '../store';
 
 interface BookingSession {
   barberId: string;
-  scheduledDate: string;
-  scheduledTime: string;
+  bookingDate: string;
+  bookingTime: string;
   serviceIds?: string[];
   notes?: string;
 }
@@ -59,7 +60,7 @@ export const useCartStore = () => {
   const startAddingSession = async (session: BookingSession) => {
     dispatch(cartSlice.onProcessing());
     try {
-      const { sessionBooking, message } = await createBooking(session as any);
+      const { sessionBooking, message } = await createBooking(session as CreateBookingParams);
       dispatch(
         cartSlice.onAddSession({
           sessionBooked: sessionBooking,
@@ -70,7 +71,9 @@ export const useCartStore = () => {
         dispatch(cartSlice.onClearMessage());
       }, 5000);
     } catch (error) {
-      console.log(error);
+      console.log({
+        error
+      });
     }
   };
 

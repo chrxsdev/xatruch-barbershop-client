@@ -43,6 +43,7 @@ export const saveService = async ({ serviceName, price, ...rest }: SaveServicePa
     price,
     ...rest,
   });
+
   return {
     service: data,
     message: message ?? '',

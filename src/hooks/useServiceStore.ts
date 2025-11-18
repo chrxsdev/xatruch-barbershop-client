@@ -1,12 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../store/store';
 import type { MessageInfo } from '../types/store';
-import {
-  getAllServices,
-  getServiceById,
-  saveService,
-  updateService,
-} from '../api';
+import { getAllServices, getServiceById, saveService, updateService } from '../api';
 import { service } from '../store';
 
 interface ServiceData {
@@ -33,19 +28,15 @@ interface UseServiceStoreReturn {
   startSavingService: (service: ServiceData) => Promise<void>;
   startSetActiveService: (service: any) => void;
   startFindService: (id: string) => Promise<void>;
+  startClearServiceErrors: () => void;
 }
 
 export const useServiceStore = (): UseServiceStoreReturn => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const {
-    services,
-    allServices,
-    activeService,
-    isLoadingServices,
-    message,
-    serviceErrors,
-  } = useSelector((state: any) => state.service);
+  const { services, allServices, activeService, isLoadingServices, message, serviceErrors } = useSelector(
+    (state: any) => state.service
+  );
 
   // Set it Loading
   const startSetIsLoading = () => {
@@ -78,18 +69,15 @@ export const useServiceStore = (): UseServiceStoreReturn => {
 
       // Saving Service
       const { service: serviceSaved, message } = await saveService(serviceData);
+
       dispatch(service.onSaveNewService({ serviceSaved, message }));
       setTimeout(() => {
         dispatch(service.onClearMessage());
       }, 3000);
     } catch (error: any) {
-      const {
-        response: {
-          data: { errors },
-        },
-      } = error;
+      const errors = error?.response?.data?.errors;
       dispatch(service.onSetServiceErrors(errors));
-      throw new Error(errors);
+      throw error;
     }
   };
 
@@ -99,7 +87,8 @@ export const useServiceStore = (): UseServiceStoreReturn => {
       const allServices = await getAllServices();
       dispatch(service.onLoadServices(allServices));
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || 'No se pudieron cargar los servicios. Verifica tu conexión a internet.';
+      const errorMessage =
+        error?.response?.data?.message || 'No se pudieron cargar los servicios. Verifica tu conexión a internet.';
       dispatch(service.onSetMessage({ text: errorMessage, type: 'danger' }));
     }
   };
@@ -120,6 +109,11 @@ export const useServiceStore = (): UseServiceStoreReturn => {
     dispatch(service.onSetIsLoading());
   };
 
+  // Clear Service Errors
+  const startClearServiceErrors = () => {
+    dispatch(service.onClearErrors());
+  };
+
   return {
     // props
     services,
@@ -137,5 +131,6 @@ export const useServiceStore = (): UseServiceStoreReturn => {
     startSavingService,
     startSetActiveService,
     startFindService,
+    startClearServiceErrors,
   };
 };

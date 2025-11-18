@@ -57,7 +57,7 @@ export interface ServiceState {
     imageUrl?: string;
     isActive: boolean;
   } | null;
-  serviceErrors: string[];
+  serviceErrors: any[];
   message?: MessageInfo;
 }
 

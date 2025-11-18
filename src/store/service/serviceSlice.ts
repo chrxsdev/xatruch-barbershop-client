@@ -50,8 +50,8 @@ export const serviceSlice = createSlice({
     onSetActiveService: (state, { payload }: PayloadAction<ServiceType | null>) => {
       state.activeService = payload;
     },
-    onSetServiceErrors: (state, { payload }: PayloadAction<string[]>) => {
-      state.serviceErrors = payload;
+    onSetServiceErrors: (state, { payload }: PayloadAction<any[]>) => {
+      state.serviceErrors = payload || [];
     },
     onClearMessage: (state) => {
       state.message = undefined;

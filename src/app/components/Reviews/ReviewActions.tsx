@@ -30,7 +30,12 @@ export const Actions = ({ values: { id, isApproved } }: ActionsProps) => {
 
   return (
     <>
-      <button onClick={() => onUpdate(id)} className="btn btn-dark mr-2 mt-2">
+      <button 
+        onClick={() => onUpdate(id)} 
+        className="btn btn-dark mr-2 mt-2"
+        disabled={isApproved}
+        title={isApproved ? 'No se puede editar una review aprobada' : 'Editar review'}
+      >
         <FontAwesomeIcon icon={faEdit} />
       </button>
       {!isApproved && (

@@ -32,11 +32,12 @@ export const ServicesModal = () => {
   } = useForm<ServiceModalFormData>({ defaultValues: initForm });
 
   const { isModalOpen, startCloseModal } = useUiStore();
-  const { message, activeService, serviceErrors, startSavingService } = useServiceStore();
+  const { message, activeService, serviceErrors, startSavingService, startClearServiceErrors } = useServiceStore();
 
   const closeModalAndClean = () => {
     reset();
     clearErrors();
+    startClearServiceErrors();
     startCloseModal();
   };
 
@@ -46,27 +47,32 @@ export const ServicesModal = () => {
 
   useEffect(() => {
     if (message !== undefined) {
-      const successInfo = alertSuccess(message, 'success');
+      const successInfo = alertSuccess(message?.text, 'success');
       Swal.fire(successInfo);
     }
   }, [message]);
 
   useEffect(() => {
     if (serviceErrors && serviceErrors.length > 0) {
-      for (const error of serviceErrors) {
-        setError(error as any, {
-          type: 'server',
-          message: 'Validation error',
-        });
-      }
+      serviceErrors.forEach((error: any) => {
+        if (error?.field && error?.message) {
+          const fieldName = error.field as 'serviceName' | 'price';
+          setError(fieldName, {
+            type: 'manual',
+            message: error.message,
+          });
+        }
+      });
     }
-  }, [serviceErrors]);
+  }, [serviceErrors, setError]);
 
   const onSubmit = async (data: ServiceModalFormData) => {
-    startSavingService(data as any).then(() => {
-      reset();
-      startCloseModal();
-    });
+    await startSavingService(data as any);
+    // Only execute on success
+    reset();
+    clearErrors();
+    startClearServiceErrors();
+    startCloseModal();
   };
 
   return (

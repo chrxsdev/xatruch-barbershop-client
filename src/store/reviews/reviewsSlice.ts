@@ -75,6 +75,10 @@ export const reviewsSlice = createSlice({
     onLoadApprovedReviews: (state, { payload }: PayloadAction<ReviewType[]>) => {
       state.approvedReviews = payload;
     },
+    onClearReviews: (state) => {
+      state.reviews = [];
+      state.isLoadingReviews = true;
+    },
     onLogoutReviews: (state) => {
       state.reviews = [];
       state.activeReview = null;
@@ -89,6 +93,7 @@ export const {
   onAddNewReview,
   onApproveReviews,
   onClearMessage,
+  onClearReviews,
   onDeleteReview,
   onFindUserReview,
   onLoadReviews,

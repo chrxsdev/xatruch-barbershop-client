@@ -33,6 +33,7 @@ export const useReviewStore = () => {
 
   // Loading Reviews
   const startLoadingReviews = async (isAdmin = false) => {
+    dispatch(ReviewStore.onClearReviews());
     if (!isAdmin) {
       const userReviews = await getUserReviews();
       dispatch(ReviewStore.onLoadReviews(userReviews));
